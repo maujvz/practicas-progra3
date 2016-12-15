@@ -6,11 +6,14 @@
 package lab2;
 
 import java.awt.FlowLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -19,42 +22,58 @@ import javax.swing.UIManager;
  *
  * @author Estudiante
  */
-public class Lab1 extends JFrame {
+public class Lab2 extends JFrame implements FocusListener {
 
+    JTextField nombre, telefono;
+    String cadena = "";
+    JTextArea texto;
     String[] genero = {"  Masculino", "   Femenino"};
     JComboBox generoComboBox = new JComboBox(genero);
 
-    public Lab1() {
-        super("Form");
+    public Lab2() {
+        super("Formulario"); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLookAndFeel();
-        setSize(300, 400);
+        setSize(300, 350);
         FlowLayout lm = new FlowLayout(FlowLayout.CENTER);
         setLayout(lm);
         JPanel panel = new JPanel();
+        panel.setName("Form");
         JLabel nombreLabel = new JLabel("Nombre:   ");
         nombreLabel.setName("lblName");
         JLabel numeroDeTelefonoLabel = new JLabel("Número de Teléfono: ");
+        numeroDeTelefonoLabel.setName("lblPhone");
         JLabel generoLabel = new JLabel("Género:                          ");
-        JTextField nombreTextField = new JTextField(15);
-        JTextField numeroDeTelefonoTextField = new JTextField(10);
+        generoLabel.setName("lblGender");
+        nombre = new JTextField(15);
+        nombre.setName("txtName");
+        nombre.addFocusListener(this);
+        telefono = new JTextField(10);
+        telefono.setName("txtPhone");
+        telefono.addFocusListener(this);
         JButton clearButton = new JButton("Clear");
+        clearButton.setName("clean");
         JButton aceptarButton = new JButton("Aceptar");
-
+        aceptarButton.setName("ok");
+        texto = new JTextArea(4, 22);
+        texto.setName("lblResult");
+        texto.addFocusListener(this);
+        texto.setEditable(false);
+        
         add(nombreLabel);
-        add(nombreTextField);
+        add(nombre);
         add(numeroDeTelefonoLabel);
-        add(numeroDeTelefonoTextField);
+        add(telefono);
         add(generoLabel);
         add(generoComboBox);
         add(clearButton);
         add(aceptarButton);
+        add(texto);
 
         add(panel);
         setVisible(true);
-
     }
-
+    
     private void setLookAndFeel() {
         try {
             UIManager.setLookAndFeel(
@@ -71,8 +90,29 @@ public class Lab1 extends JFrame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Lab1 lab2 = new Lab1();
+        Lab2 lab2 = new Lab2();
+        
+        
+                
         // TODO code application logic here
+    }
+
+    @Override
+    public void focusGained(FocusEvent fe) {
+        try {
+            cadena = "Nombre: " + nombre.getText() +"\n" 
+            + "Teléfono: " + telefono.getText();
+            texto.setText(cadena);
+        } catch (NumberFormatException nfe) {
+            nombre.setText("");
+            telefono.setText("");
+            texto.setText(cadena);
+        }
+    }
+
+    @Override
+    public void focusLost(FocusEvent fe) {
+        focusGained(fe);
     }
 
 }
